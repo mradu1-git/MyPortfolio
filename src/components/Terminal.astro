@@ -1,0 +1,123 @@
+---                                                                                          
+/**                                                                                          
+* Interactive terminal: type help | skills | kde | k8s | clear                              
+*/                                                                                          
+---                                                                                          
+                                                                                            
+<div                                                                                         
+    class="overflow-hidden rounded-sm border border-border bg-surface                          
+shadow-[0_0_0_1px_rgba(39,39,42,0.5)]"                                                         
+    role="region"                                                                              
+    aria-label="Interactive portfolio terminal"                                                
+>                                                                                            
+    <div class="flex items-center gap-2 border-b border-border px-3 py-2" aria-hidden="true">  
+    <span class="size-2.5 rounded-full bg-red-500/80"></span>                                
+    <span class="size-2.5 rounded-full bg-amber-400/80"></span>                              
+    <span class="size-2.5 rounded-full bg-emerald-500/80"></span>                            
+    <span class="ml-2 font-mono text-xs text-muted">mradul@portfolio:~</span>                
+    </div>                                                                                     
+                                                                                            
+    <div                                                                                       
+    id="terminal-output"                                                                     
+    class="h-56 overflow-y-auto px-3 py-3 font-mono text-sm leading-relaxed text-zinc-300"   
+    aria-live="polite"                                                                       
+    aria-relevant="additions"                                                                
+    >                                                                                          
+    <p class="text-muted">Type <span class="text-accent">help</span> to get started.</p>     
+    </div>                                                                                     
+                                                                                            
+    <form                                                                                      
+    id="terminal-form"                                                                       
+    class="flex items-center gap-2 border-t border-border px-3 py-2"                         
+    autocomplete="off"                                                                       
+    >                                                                                          
+    <label for="terminal-input" class="sr-only">Terminal command</label>                     
+    <span class="font-mono text-sm text-accent" aria-hidden="true">$</span>                  
+    <input                                                                                   
+        id="terminal-input"                                                                    
+        name="command"                                                                         
+        type="text"                                                                            
+        class="w-full bg-transparent font-mono text-sm text-text outline-none                  
+placeholder:text-muted/60"                                                                     
+        placeholder="help"                                                                     
+        spellcheck="false"                                                                     
+        aria-describedby="terminal-hint"                                                       
+    />                                                                                       
+    </form>                                                                                    
+    <p id="terminal-hint" class="sr-only">                                                     
+    Available commands: help, skills, kde, k8s, clear                                        
+    </p>                                                                                       
+</div>                                                                                       
+                                                                                            
+<script>                                                                                     
+    const responses = {                                                                        
+    help: `Available commands:                                                               
+    help    — show this list                                                                   
+    skills  — cloud-native & backend skills                                                    
+    kde     — open-source / KDE focus                                                          
+    k8s     — Kubernetes & GitOps notes                                                        
+    clear   — clear the screen`,                                                               
+                                                                                            
+    skills: `Skills                                                                          
+    Languages : Go, Node.js, JavaScript, C++ (Qt)                                              
+    Platforms : Kubernetes, Docker, Linux                                                      
+    Practice  : CI/CD, GitOps, REST APIs, observability basics`,                               
+                                                                                            
+    kde: `KDE / open source                                                                  
+    Contributing to KDE desktop apps and the Qt/C++ ecosystem.                                 
+    Focus: useful fixes, accessibility, and shipping merge requests.`,                         
+                                                                                            
+    k8s: `Kubernetes                                                                         
+    Local clusters (Kind / Minikube), Deployments + Services,                                  
+    container images, and GitOps-style rollouts for static sites & APIs.`,                     
+    };                                                                                         
+                                                                                            
+    const form = document.getElementById('terminal-form');                                     
+    const input = document.getElementById('terminal-input');                                   
+    const output = document.getElementById('terminal-output');                                 
+                                                                                            
+    /**                                                                                        
+    * @param {string} cmd                                                                     
+    * @param {string} body                                                                    
+    */                                                                                        
+    function appendBlock(cmd, body) {                                                          
+    if (!output) return;                                                                     
+                                                                                            
+    const wrap = document.createElement('div');                                              
+    wrap.className = 'mt-3 space-y-1';                                                       
+                                                                                            
+    const prompt = document.createElement('p');                                              
+    prompt.innerHTML = `<span class="text-accent">$</span> <span                             
+class="text-text">${cmd}</span>`;                                                              
+                                                                                            
+    const pre = document.createElement('pre');                                               
+    pre.className = 'whitespace-pre-wrap text-zinc-400';                                     
+    pre.textContent = body;                                                                  
+                                                                                            
+    wrap.append(prompt, pre);                                                                
+    output.append(wrap);                                                                     
+    output.scrollTop = output.scrollHeight;                                                  
+    }                                                                                          
+                                                                                            
+    form?.addEventListener('submit', (event) => {                                              
+    event.preventDefault();                                                                  
+    if (!input || !(input instanceof HTMLInputElement)) return;                              
+                                                                                            
+    const raw = input.value.trim();                                                          
+    const cmd = raw.toLowerCase();                                                           
+    input.value = '';                                                                        
+                                                                                            
+    if (!cmd) return;                                                                        
+                                                                                            
+    if (cmd === 'clear') {                                                                   
+        if (output) output.innerHTML = '';                                                     
+        return;                                                                                
+    }                                                                                        
+                                                                                            
+    const body =                                                                             
+        responses[/** @type {keyof typeof responses} */ (cmd)] ??                              
+        `Command not found: ${raw}\nType "help" for available commands.`;                      
+                                                                                            
+    appendBlock(raw, body);                                                                  
+    });                                                                                        
+</script>      
