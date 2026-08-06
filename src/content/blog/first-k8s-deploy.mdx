@@ -1,0 +1,28 @@
+---
+title: 'First Kubernetes deployment for a static site'
+description: 'Notes from containerizing an Astro portfolio and running it on a local Kind cluster.'
+pubDate: 2025-01-15
+tags: ['kubernetes', 'astro', 'devops']
+---
+
+## Context
+
+After building a static Astro site, the next step was packaging it for repeatable deployment — not just `npm run build` on a laptop.
+
+## What I did
+
+1. **Multi-stage Dockerfile** — Node Alpine builds the site; NGINX Alpine serves `dist/`.
+2. **Kind cluster** — local Kubernetes for testing manifests before any cloud deploy.
+3. **Deployment + Service** — two manifests to run the container and expose port 80.
+
+## Lessons
+
+- Static sites don't need a runtime Node process in production — NGINX is enough.
+- Keep build and serve stages separate; final image stays small.
+- Label everything consistently (`app=portfolio`) so Services find Pods reliably.
+
+## Next steps
+
+- Wire GitHub Actions to build the image and push to a registry.
+- Add Helm values for `replicaCount` and image tag.
+- Explore GitOps with Argo CD or Flux once the pipeline is stable.

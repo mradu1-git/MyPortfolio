@@ -1,8 +1,14 @@
-  ---                                                                                          
-   import BaseLayout from '../layouts/BaseLayout.astro';                                        
-   import Hero from '../components/Hero.astro';                                                 
-   ---                                                                                          
-                                                                                                
-   <BaseLayout>                                                                                 
-     <Hero />                                                                                   
-   </BaseLayout> 
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Projects from '../components/Projects.astro';
+import Contributions from '../components/Contributions.astro';
+import CICDVisualizer from '../components/CICDVisualizer.astro';
+---
+
+<BaseLayout>
+  <Hero />
+  <Projects />
+  <Contributions />
+  <CICDVisualizer />
+</BaseLayout>

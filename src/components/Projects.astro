@@ -1,0 +1,107 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import { projects } from '../data/projects.js';
+
+const filters = ['All', 'Go', 'Node.js', 'Kubernetes', 'REST API'];
+---
+
+<section id="projects" class="mx-auto max-w-5xl px-4 py-16" aria-labelledby="projects-heading">
+  <p class="font-mono text-sm text-accent">// projects</p>
+  <h2 id="projects-heading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+    Featured work
+  </h2>
+  <p class="mt-3 max-w-2xl text-muted">
+    KDE desktop tools, Go APIs, and Node.js microservices — with deployment notes.
+  </p>
+
+  <div
+    class="mt-8 flex flex-wrap gap-2"
+    role="toolbar"
+    aria-label="Filter projects by technology"
+  >
+    {
+      filters.map((filter, index) => (
+        <button
+          type="button"
+          class:list={[
+            'filter-btn rounded-sm border px-3 py-1.5 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+            index === 0
+              ? 'border-accent/40 bg-accent/10 text-accent'
+              : 'border-border bg-surface text-muted hover:text-text',
+          ]}
+          data-filter={filter}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+        >
+          {filter}
+        </button>
+      ))
+    }
+  </div>
+
+  <div id="projects-grid" class="mt-8 grid gap-6 sm:grid-cols-2">
+    {projects.map((project) => <ProjectCard project={project} />)}
+  </div>
+
+  <p id="projects-empty" class="mt-6 hidden text-sm text-muted" role="status">
+    No projects match that filter.
+  </p>
+</section>
+
+<script>
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.project-card');
+  const emptyState = document.getElementById('projects-empty');
+
+  /** @param {string} active */
+  function applyFilter(active) {
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const tech = card.getAttribute('data-tech')?.toLowerCase() ?? '';
+      const show = active === 'All' || tech.includes(active.toLowerCase());
+      card.classList.toggle('hidden', !show);
+      if (show) visibleCount += 1;
+    });
+
+    emptyState?.classList.toggle('hidden', visibleCount > 0);
+  }
+
+  /** @param {HTMLElement} button */
+  function setActiveButton(button) {
+    filterButtons.forEach((btn) => {
+      const isActive = btn === button;
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      btn.classList.toggle('border-accent/40', isActive);
+      btn.classList.toggle('bg-accent/10', isActive);
+      btn.classList.toggle('text-accent', isActive);
+      btn.classList.toggle('border-border', !isActive);
+      btn.classList.toggle('bg-surface', !isActive);
+      btn.classList.toggle('text-muted', !isActive);
+    });
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.getAttribute('data-filter') ?? 'All';
+      setActiveButton(/** @type {HTMLElement} */ (button));
+      applyFilter(filter);
+    });
+  });
+
+  document.querySelectorAll('.tech-tag').forEach((tag) => {
+    tag.addEventListener('click', () => {
+      const tech = tag.getAttribute('data-filter-tech');
+      if (!tech) return;
+
+      const matchingButton = Array.from(filterButtons).find(
+        (btn) => btn.getAttribute('data-filter') === tech,
+      );
+
+      if (matchingButton instanceof HTMLElement) {
+        setActiveButton(matchingButton);
+        applyFilter(tech);
+        document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>

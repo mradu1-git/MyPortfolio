@@ -1,0 +1,31 @@
+---
+title: 'GitOps workflow for a personal portfolio'
+description: 'How push-to-main triggers lint, build, Docker test, and edge deploy.'
+pubDate: 2025-02-10
+tags: ['gitops', 'cicd', 'github-actions']
+---
+
+## The goal
+
+Treat the portfolio repo as **infrastructure-as-code**: every change goes through the same pipeline, and production always reflects `main`.
+
+## Pipeline stages
+
+| Stage | Purpose |
+| --- | --- |
+| Lint | Catch JS/style issues early |
+| Build | `astro build` → static `dist/` |
+| Docker test | Verify the Alpine multi-stage image builds |
+| Deploy | Upload `dist/` to Cloudflare Pages or Vercel |
+
+## Why GitOps here
+
+Even a static site benefits from:
+
+- **Reproducible builds** — same Node version, same commands every time.
+- **Audit trail** — Git history shows who changed what and when.
+- **Rollback** — revert a commit, redeploy.
+
+## Takeaway
+
+GitOps isn't only for microservices. Any site you care about can use the same discipline — small repo, clear workflow, automated deploy on merge.

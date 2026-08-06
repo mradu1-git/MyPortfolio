@@ -21,8 +21,64 @@
     @apply bg-bg text-text font-sans antialiased;                                                  
     }                                                                                                
                                                                                                     
-    a {                                                                                              
-    @apply text-accent underline-offset-4 hover:underline focus-visible:outline                    
-focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;                 
-    }                                                                                                
-}       
+    a {
+    @apply text-accent underline-offset-4 hover:underline focus-visible:outline
+focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;
+    }
+}
+
+@layer components {
+    .prose {
+        @apply text-text leading-relaxed;
+    }
+
+    .prose h2 {
+        @apply mt-10 mb-4 text-xl font-semibold text-text;
+    }
+
+    .prose h3 {
+        @apply mt-8 mb-3 text-lg font-medium text-text;
+    }
+
+    .prose p {
+        @apply mb-4 text-muted;
+    }
+
+    .prose ul,
+    .prose ol {
+        @apply mb-4 ml-6 text-muted;
+    }
+
+    .prose ul {
+        @apply list-disc;
+    }
+
+    .prose ol {
+        @apply list-decimal;
+    }
+
+    .prose li {
+        @apply mb-1;
+    }
+
+    .prose a {
+        @apply text-accent;
+    }
+
+    .prose code {
+        @apply rounded-sm bg-surface px-1 py-0.5 font-mono text-sm text-accent;
+    }
+
+    .prose table {
+        @apply mb-6 w-full border-collapse text-sm;
+    }
+
+    .prose th,
+    .prose td {
+        @apply border border-border px-3 py-2 text-left;
+    }
+
+    .prose th {
+        @apply bg-surface font-medium text-text;
+    }
+}

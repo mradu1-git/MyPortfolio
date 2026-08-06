@@ -1,22 +1,18 @@
- /**                                                                                          
-* @typedef {'default' | 'accent' | 'muted'} BadgeVariant                                    
-* @type {{ label: string; variant?: BadgeVariant }}                                         
-*/                                                                                          
-const { label, variant = 'default' } = Astro.props;                                          
-                                                                                            
-const variants = {                                                                           
-    default: 'border-border bg-surface text-text',                                             
-    accent: 'border-accent-dim/50 bg-accent/10 text-accent',                                   
-    muted: 'border-border bg-transparent text-muted',                                          
-};                                                                                           
----                                                                                          
-                                                                                            
-<span                                                                                        
-    class:list={[                                                                              
-    'inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-medium              
-tracking-wide',                                                                                
-    variants[variant],                                                                       
-    ]}                                                                                         
->                                                                                            
-    {label}                                                                                    
-</span> 
+---
+const { label, variant = 'default' } = Astro.props;
+
+const variants = {
+  default: 'border-border bg-surface text-text',
+  accent: 'border-accent-dim/50 bg-accent/10 text-accent',
+  muted: 'border-border bg-transparent text-muted',
+};
+---
+
+<span
+  class:list={[
+    'inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-medium tracking-wide',
+    variants[variant],
+  ]}
+>
+  {label}
+</span>

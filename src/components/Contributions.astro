@@ -1,0 +1,182 @@
+---
+import Badge from './Badge.astro';
+import ContributionTimeline from './ContributionTimeline.astro';
+import { contributions } from '../data/contributions.js';
+import { ExternalLink } from '@lucide/astro';
+
+const orgFilters = [
+  { id: 'all', label: 'All' },
+  { id: 'kde', label: 'KDE' },
+  { id: 'cncf', label: 'CNCF' },
+];
+
+const typeFilters = [
+  { id: 'all', label: 'All types' },
+  { id: 'pr', label: 'Pull requests' },
+  { id: 'issue', label: 'Issues' },
+];
+
+const statusVariant = {
+  merged: 'accent',
+  open: 'default',
+  closed: 'muted',
+};
+---
+
+<section id="contributions" class="border-t border-border" aria-labelledby="contributions-heading">
+  <div class="mx-auto max-w-5xl px-4 py-16">
+    <p class="font-mono text-sm text-accent">// open source</p>
+    <h2 id="contributions-heading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+      Open source contributions
+    </h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      KDE desktop work and upcoming CNCF contributions — filter by org or type.
+    </p>
+
+    <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+      <div role="group" aria-label="Filter by organization" class="flex flex-wrap gap-2">
+        {
+          orgFilters.map((filter, index) => (
+            <button
+              type="button"
+              class:list={[
+                'org-filter rounded-sm border px-3 py-1.5 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+                index === 0
+                  ? 'border-accent/40 bg-accent/10 text-accent'
+                  : 'border-border bg-surface text-muted hover:text-text',
+              ]}
+              data-org={filter.id}
+              aria-pressed={index === 0 ? 'true' : 'false'}
+            >
+              {filter.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <div role="group" aria-label="Filter by contribution type" class="flex flex-wrap gap-2">
+        {
+          typeFilters.map((filter, index) => (
+            <button
+              type="button"
+              class:list={[
+                'type-filter rounded-sm border px-3 py-1.5 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+                index === 0
+                  ? 'border-accent/40 bg-accent/10 text-accent'
+                  : 'border-border bg-surface text-muted hover:text-text',
+              ]}
+              data-type={filter.id}
+              aria-pressed={index === 0 ? 'true' : 'false'}
+            >
+              {filter.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <ul id="contributions-list" class="mt-8 grid gap-4 sm:grid-cols-2" role="list">
+      {
+        contributions.map((item) => (
+          <li
+            class="contribution-card rounded-sm border border-border bg-surface p-4 transition hover:border-accent/30"
+            data-org={item.org}
+            data-type={item.type}
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="font-mono text-xs uppercase text-muted">
+                  {item.org} · {item.type}
+                </p>
+                <h3 class="mt-1 text-base font-medium text-text">{item.title}</h3>
+                <p class="mt-1 text-sm text-muted">{item.repo}</p>
+              </div>
+              <Badge
+                label={item.status}
+                variant={statusVariant[item.status] ?? 'default'}
+              />
+            </div>
+
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <time datetime={item.date} class="text-xs text-muted">
+                {item.date}
+              </time>
+              <a
+                href={item.url}
+                class="inline-flex items-center gap-1 text-sm text-accent no-underline hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`View ${item.type} on ${item.repo}`}
+              >
+                View
+                <ExternalLink class="size-3.5" aria-hidden="true" />
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p id="contributions-empty" class="mt-6 hidden text-sm text-muted" role="status">
+      No contributions match those filters.
+    </p>
+  </div>
+
+  <ContributionTimeline />
+</section>
+
+<script>
+  let activeOrg = 'all';
+  let activeType = 'all';
+
+  const orgButtons = document.querySelectorAll('.org-filter');
+  const typeButtons = document.querySelectorAll('.type-filter');
+  const cards = document.querySelectorAll('.contribution-card');
+  const emptyState = document.getElementById('contributions-empty');
+
+  /** @param {NodeListOf<Element>} buttons @param {HTMLElement} active */
+  function setActiveGroup(buttons, active) {
+    buttons.forEach((btn) => {
+      const isActive = btn === active;
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      btn.classList.toggle('border-accent/40', isActive);
+      btn.classList.toggle('bg-accent/10', isActive);
+      btn.classList.toggle('text-accent', isActive);
+      btn.classList.toggle('border-border', !isActive);
+      btn.classList.toggle('bg-surface', !isActive);
+      btn.classList.toggle('text-muted', !isActive);
+    });
+  }
+
+  function applyFilters() {
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const org = card.getAttribute('data-org') ?? '';
+      const type = card.getAttribute('data-type') ?? '';
+      const orgMatch = activeOrg === 'all' || org === activeOrg;
+      const typeMatch = activeType === 'all' || type === activeType;
+      const show = orgMatch && typeMatch;
+      card.classList.toggle('hidden', !show);
+      if (show) visibleCount += 1;
+    });
+
+    emptyState?.classList.toggle('hidden', visibleCount > 0);
+  }
+
+  orgButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      activeOrg = button.getAttribute('data-org') ?? 'all';
+      setActiveGroup(orgButtons, /** @type {HTMLElement} */ (button));
+      applyFilters();
+    });
+  });
+
+  typeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      activeType = button.getAttribute('data-type') ?? 'all';
+      setActiveGroup(typeButtons, /** @type {HTMLElement} */ (button));
+      applyFilters();
+    });
+  });
+</script>

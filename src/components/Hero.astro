@@ -1,85 +1,76 @@
- ---                                                                                          
-   import Badge from './Badge.astro';                                                           
-   import Terminal from './Terminal.astro';                                                     
-   import { site } from '../data/site.js';                                                      
-   import { Github, Linkedin, Mail } from '@lucide/astro';                                      
-                                                                                                
-   const iconMap = {                                                                            
-     github: Github,                                                                            
-     linkedin: Linkedin,                                                                        
-     email: Mail,                                                                               
-   };                                                                                           
-   ---                                                                                          
-                                                                                                
-   <section class="relative overflow-hidden border-b border-border"                             
- aria-labelledby="hero-heading">                                                                
-     <!-- subtle grid atmosphere (not a card) -->                                               
-     <div                                                                                       
-       class="pointer-events-none absolute inset-0                                              
- bg-[linear-gradient(to_right,#27272a22_1px,transparent_1px),linear-gradient(to_bottom,#27272a2 
- 2_1px,transparent_1px)] bg-[size:32px_32px]"                                                   
-       aria-hidden="true"                                                                       
-     ></div>                                                                                    
-     <div                                                                                       
-       class="pointer-events-none absolute inset-0                                              
- bg-[radial-gradient(ellipse_at_top,_rgba(34,211,238,0.08),_transparent_55%)]"                  
-       aria-hidden="true"                                                                       
-     ></div>                                                                                    
-                                                                                                
-     <div class="relative mx-auto grid max-w-5xl gap-10 px-4 py-16 sm:py-20 lg:grid-cols-2      
- lg:items-center lg:gap-12">                                                                    
-       <div>                                                                                    
-         <p class="font-mono text-sm text-accent">~/portfolio</p>                               
-                                                                                                
-         <h1                                                                                    
-           id="hero-heading"                                                                    
-           class="mt-3 text-4xl font-bold tracking-tight text-text sm:text-5xl"                 
-         >                                                                                      
-           {site.name}                                                                          
-         </h1>                                                                                  
-                                                                                                
-         <p class="mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg">              
-           {site.bio}                                                                           
-         </p>                                                                                   
-                                                                                                
-         <ul class="mt-6 flex flex-wrap gap-2" aria-label="Focus areas">                        
-           {                                                                                    
-             site.badges.map((badge) => (                                                       
-               <li>                                                                             
-                 <Badge label={badge} variant="accent" />                                       
-               </li>                                                                            
-             ))                                                                                 
-           }                                                                                    
-         </ul>                                                                                  
-                                                                                                
-         <ul class="mt-8 flex flex-wrap gap-3" aria-label="Contact links">                      
-           {                                                                                    
-             site.links.map((link) => {                                                         
-               const Icon = iconMap[link.id];                                                   
-               return (                                                                         
-                 <li>                                                                           
-                   <a                                                                           
-                     href={link.href}                                                           
-                     class="inline-flex items-center gap-2 rounded-sm border border-border      
- bg-surface px-3 py-2 text-sm text-text no-underline transition hover:border-accent/40          
- hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
- focus-visible:outline-accent"                                                                  
-                     rel={link.id === 'email' ? undefined : 'noopener noreferrer'}              
-                     target={link.id === 'email' ? undefined : '_blank'}                        
-                     aria-label={link.label}                                                    
-                   >                                                                            
-                     <Icon class="size-4" aria-hidden="true" />                                 
-                     <span>{link.label}</span>                                                  
-                   </a>                                                                         
-                 </li>                                                                          
-               );                                                                               
-             })                                                                                 
-           }                                                                                    
-         </ul>                                                                                  
-       </div>                                                                                   
-                                                                                                
-       <div>                                                                                    
-         <Terminal />                                                                           
-       </div>                                                                                   
-     </div>                                                                                     
-   </section>     
+---
+import Badge from './Badge.astro';
+import Terminal from './Terminal.astro';
+import { site } from '../data/site.js';
+import { FolderGit, Link, Mail } from '@lucide/astro';
+
+const iconMap = {
+  github: FolderGit,
+  linkedin: Link,
+  email: Mail,
+};
+---
+
+<section class="relative overflow-hidden border-b border-border" aria-labelledby="hero-heading">
+  <!-- subtle grid atmosphere (not a card) -->
+  <div
+    class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#27272a22_1px,transparent_1px),linear-gradient(to_bottom,#27272a22_1px,transparent_1px)] bg-[size:32px_32px]"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(34,211,238,0.08),_transparent_55%)]"
+    aria-hidden="true"
+  ></div>
+
+  <div
+    class="relative mx-auto grid max-w-5xl gap-10 px-4 py-16 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-12"
+  >
+    <div>
+      <p class="font-mono text-sm text-accent">~/portfolio</p>
+
+      <h1 id="hero-heading" class="mt-3 text-4xl font-bold tracking-tight text-text sm:text-5xl">
+        {site.name}
+      </h1>
+
+      <p class="mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+        {site.bio}
+      </p>
+
+      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Focus areas">
+        {
+          site.badges.map((badge) => (
+            <li>
+              <Badge label={badge} variant="accent" />
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="mt-8 flex flex-wrap gap-3" aria-label="Contact links">
+        {
+          site.links.map((link) => {
+            const Icon = iconMap[link.id];
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  class="inline-flex items-center gap-2 rounded-sm border border-border bg-surface px-3 py-2 text-sm text-text no-underline transition hover:border-accent/40 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  rel={link.id === 'email' ? undefined : 'noopener noreferrer'}
+                  target={link.id === 'email' ? undefined : '_blank'}
+                  aria-label={link.label}
+                >
+                  <Icon class="size-4" aria-hidden="true" />
+                  <span>{link.label}</span>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+
+    <div>
+      <Terminal />
+    </div>
+  </div>
+</section>

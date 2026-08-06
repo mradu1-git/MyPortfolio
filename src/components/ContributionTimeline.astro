@@ -1,0 +1,31 @@
+---
+import { timeline } from '../data/timeline.js';
+---
+
+<section class="mx-auto max-w-5xl px-4 py-8" aria-labelledby="timeline-heading">
+  <h3 id="timeline-heading" class="text-lg font-semibold text-text">Milestones</h3>
+
+  <ol class="relative mt-6 space-y-0 border-l border-border pl-6" aria-label="Contribution timeline">
+    {
+      timeline.map((item, index) => (
+        <li class="relative pb-8 last:pb-0">
+          <span
+            class="absolute -left-[7px] top-1 size-3 rounded-full border-2 border-accent bg-bg"
+            aria-hidden="true"
+          />
+          <time
+            datetime={item.date}
+            class="font-mono text-xs text-accent"
+          >
+            {item.date}
+          </time>
+          <h4 class="mt-1 text-base font-medium text-text">{item.title}</h4>
+          <p class="mt-1 text-sm text-muted">{item.description}</p>
+          {index < timeline.length - 1 && (
+            <span class="sr-only">Next milestone follows</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</section>
