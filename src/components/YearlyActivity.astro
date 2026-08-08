@@ -1,0 +1,50 @@
+---
+import ContributionGraph from './ContributionGraph.astro';
+import { activity } from '../data/activity.js';
+import { loadGithubActivity, loadInventActivity } from '../lib/activity.js';
+
+const [github, invent] = await Promise.all([
+  loadGithubActivity({
+    username: activity.github.username,
+    commitLimit: activity.commitLimit,
+  }),
+  loadInventActivity({
+    username: activity.invent.username,
+    commitLimit: activity.commitLimit,
+  }),
+]);
+---
+
+<section id="activity" class="border-t border-border" aria-labelledby="activity-heading">
+  <div class="mx-auto max-w-5xl px-4 py-16">
+    <p class="font-mono text-sm text-accent">// activity</p>
+    <h2 id="activity-heading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+      Yearly contributions
+    </h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      Green blocks for GitHub and invent.kde.org, plus recent commits from each platform.
+      Data is fetched at build time so Cloudflare Pages stays up to date on every deploy.
+    </p>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-2">
+      <ContributionGraph
+        label={activity.github.label}
+        username={activity.github.username}
+        profileUrl={activity.github.profileUrl}
+        total={github.total}
+        weeks={github.weeks}
+        commits={github.commits}
+        error={github.error}
+      />
+      <ContributionGraph
+        label={activity.invent.label}
+        username={activity.invent.username}
+        profileUrl={activity.invent.profileUrl}
+        total={invent.total}
+        weeks={invent.weeks}
+        commits={invent.commits}
+        error={invent.error}
+      />
+    </div>
+  </div>
+</section>
